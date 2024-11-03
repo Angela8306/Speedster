@@ -49,8 +49,27 @@ class MathPopup {
         practiceButton.className = 'practice-button';
         practiceButton.textContent = 'Practice';
         practiceButton.addEventListener('click', () => {
-            // Add your practice mode logic here
-            console.log('Practice mode clicked');
+            // Import and create PracticeSelection
+            import('./PracticeSelection.js').then(module => {
+                const PracticeSelection = module.default;
+                const practiceSelection = new PracticeSelection();
+                const selectionElement = practiceSelection.create(operation);
+                document.body.appendChild(selectionElement);
+                
+                // Add close handler
+                practiceSelection.addCloseHandler(async () => {
+                    await practiceSelection.hide();
+                });
+                
+                // Add start handler
+                practiceSelection.addStartHandler((selectedColumns, operation) => {
+                    console.log('Starting practice with columns:', selectedColumns);
+                    console.log('Operation:', operation);
+                    // We'll implement the actual practice mode later
+                });
+                
+                practiceSelection.show();
+            });
         });
     
         // Highlight options button
