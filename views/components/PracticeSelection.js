@@ -153,7 +153,9 @@ class PracticeSelection {
     addStartHandler(handler) {
         this.startButton.addEventListener('click', () => {
             if (this.selectedColumns.size > 0) {
-                handler(Array.from(this.selectedColumns), this.operation);
+                // Convert selected columns to URL parameters and navigate to practice.html
+                const columns = Array.from(this.selectedColumns).join(',');
+                window.location.href = `practice.html?operation=${this.operation}&columns=${columns}`;
             }
         });
     }

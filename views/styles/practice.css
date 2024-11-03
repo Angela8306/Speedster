@@ -1,0 +1,259 @@
+/* Same as before until long division section */
+.practice-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.title {
+    font-size: 2rem;
+    margin: 0;
+    color: #ffffff;
+}
+
+.back-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.practice-area {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2rem;
+    border-radius: 15px;
+}
+
+.equation-display {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #ffffff;
+    min-height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Horizontal Problem */
+.horizontal-problem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Vertical Problem */
+.vertical-problem {
+    display: inline-block;
+    text-align: right;
+    padding: 1rem;
+    padding-left: 2.5rem;
+    position: relative;
+}
+
+.top-number {
+    margin-bottom: 0.5rem;
+}
+
+.bottom-line {
+    border-bottom: 2px solid #ffffff;
+    padding-bottom: 0.5rem;
+    margin-top: 0.5rem;
+    position: relative;
+}
+
+.operator {
+    position: absolute;
+    left: 0;
+    bottom: 0.6rem;
+}
+
+.answer-line {
+    margin-top: 0.5rem;
+}
+
+/* Fraction Problem */
+.fraction-problem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.fraction {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.fraction-line {
+    width: 100%;
+    height: 2px;
+    background-color: #ffffff;
+    min-width: 40px;
+}
+
+/* Long Division Problem */
+.long-division-problem {
+    display: inline-flex;
+    align-items: flex-start;
+    position: relative;
+    padding-top: 4.5rem; /* Increased spacing for answer above */
+}
+
+.division-setup {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.division-bracket {
+    position: relative;
+    padding-left: 1rem;
+    margin-left: 0.5rem;
+}
+
+.division-bracket::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #ffffff;
+}
+
+.division-bracket::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: calc(100% + 0.5rem);
+    height: 2px;
+    background-color: #ffffff;
+}
+
+.quotient-line {
+    position: absolute;
+    top: -3.5rem; /* Increased spacing */
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+}
+
+.dividend {
+    padding-right: 0.5rem;
+}
+
+/* Answer Input Styling */
+.answer-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 0.5rem;
+    border-radius: 4px;
+    font-size: 1.5rem;
+    width: 80px;
+    text-align: center;
+    appearance: textfield; /* Standard property */
+}
+
+/* Remove ALL default spinners */
+.answer-input::-webkit-outer-spin-button,
+.answer-input::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+}
+
+.answer-input:focus {
+    outline: none;
+    border-color: #7eb2ff;
+}
+
+/* Stats */
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #b8c6db;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* For MathPopup equations */
+.equation {
+    position: relative;
+    padding: 0.50rem;
+    display: block;
+}
+
+.equations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.equation .operator {
+    position: static;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .practice-container {
+        padding: 1rem;
+    }
+
+    .title {
+        font-size: 1.5rem;
+    }
+
+    .equation-display {
+        font-size: 1.5rem;
+        min-height: 120px;
+    }
+
+    .answer-input {
+        font-size: 1.2rem;
+        width: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .equation-display {
+        font-size: 1.2rem;
+        min-height: 100px;
+    }
+}

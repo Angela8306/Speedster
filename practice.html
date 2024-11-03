@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Practice - Speedster</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="views/styles/practice.css">
+</head>
+<body>
+    <script type="module">
+        import PracticeController from './controllers/PracticeController.js';
+
+        // Get practice parameters from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const operation = urlParams.get('operation');
+        const columns = urlParams.get('columns').split(',').map(Number);
+
+        // Initialize practice
+        const practiceController = new PracticeController();
+        practiceController.initialize(operation, columns);
+    </script>
+</body>
+</html>
