@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Speedster</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="views/styles/popup.css">
 </head>
 <body>
     <header>
@@ -44,5 +45,17 @@
             </div>
         </div>
     </main>
+
+    <script type="module">
+        import MathOperations from './models/MathOperations.js';
+        import PopupController from './controllers/PopupController.js';
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            const mathModel = new MathOperations();
+            const popupController = new PopupController(mathModel);
+            popupController.initialize();
+        });
+    </script>
 </body>
 </html>
