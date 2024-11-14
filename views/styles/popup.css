@@ -348,3 +348,35 @@
 .popup-content::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.3);
 }
+
+/* Action Buttons Container */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Games Button */
+.games-button {
+    background: #ff7eb2; /* Playful pink color */
+    border: none;
+    color: #1a1f2e;
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem; /* Space between emoji and text */
+}
+
+.games-button:hover {
+    background: #ff9cc2;
+    transform: translateY(-1px);
+}
+
+.games-button:active {
+    transform: translateY(0);
+}

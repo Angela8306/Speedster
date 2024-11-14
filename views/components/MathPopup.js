@@ -44,6 +44,10 @@ class MathPopup {
         const headerButtons = document.createElement('div');
         headerButtons.className = 'header-buttons';
     
+        // Button container for practice and games
+        const actionButtons = document.createElement('div');
+        actionButtons.className = 'action-buttons';
+
         // Practice button
         const practiceButton = document.createElement('button');
         practiceButton.className = 'practice-button';
@@ -65,12 +69,39 @@ class MathPopup {
                 practiceSelection.addStartHandler((selectedColumns, operation) => {
                     console.log('Starting practice with columns:', selectedColumns);
                     console.log('Operation:', operation);
-                    // We'll implement the actual practice mode later
                 });
                 
                 practiceSelection.show();
             });
         });
+
+        // Games button
+        const gamesButton = document.createElement('button');
+        gamesButton.className = 'games-button';
+        gamesButton.innerHTML = '🎮 Games';
+        gamesButton.addEventListener('click', () => {
+            // Import and create GameSelection
+            import('./GameSelection.js').then(module => {
+                const GameSelection = module.default;
+                const gameSelection = new GameSelection();
+                const selectionElement = gameSelection.create(operation);
+                document.body.appendChild(selectionElement);
+                
+                // Add close handler
+                gameSelection.addCloseHandler(async () => {
+                    await gameSelection.hide();
+                });
+                
+                gameSelection.show();
+            });
+        });
+
+        // Add buttons to container
+        actionButtons.appendChild(practiceButton);
+        actionButtons.appendChild(gamesButton);
+        
+        // Add button container to header buttons
+        headerButtons.appendChild(actionButtons);
     
         // Highlight options button
         const highlightButton = document.createElement('button');
@@ -88,7 +119,6 @@ class MathPopup {
         closeButton.textContent = '×';
     
         // Add all buttons to header buttons container
-        headerButtons.appendChild(practiceButton);
         headerButtons.appendChild(highlightButton);
         headerButtons.appendChild(closeButton);
     
