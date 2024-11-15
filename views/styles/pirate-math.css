@@ -1,0 +1,353 @@
+/* views/styles/pirate-math.css */
+
+.pirate-math-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    position: relative;
+}
+
+/* Header Styles */
+.pirate-math-container .game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid #8b4513;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.pirate-math-container .back-button {
+    background: #8b4513;
+    border: 2px solid #daa520;
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pirate-math-container .back-button:hover {
+    background: #a0522d;
+    transform: translateY(-2px);
+}
+
+/* Coin Display */
+.pirate-math-container .coins {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(218, 165, 32, 0.2);
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 2px solid #daa520;
+    animation: shimmer 2s infinite;
+}
+
+.pirate-math-container .coin-icon {
+    font-size: 24px;
+    color: #ffd700;
+}
+
+.pirate-math-container .coin-count {
+    color: #daa520;
+    font-weight: bold;
+    font-size: 20px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Game Content */
+.pirate-math-container .game-content {
+    background: rgba(139, 69, 19, 0.1);
+    padding: 32px;
+    border-radius: 15px;
+    min-height: 500px;
+    border: 3px solid #8b4513;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Screen Management */
+.pirate-math-container .screen {
+    display: none;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.pirate-math-container .screen.active {
+    display: block;
+    opacity: 1;
+}
+
+/* Intro Screen */
+.pirate-math-container #intro-screen h2 {
+    font-size: 48px;
+    color: #daa520;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 32px;
+}
+
+.pirate-math-container .intro-content {
+    margin-bottom: 40px;
+}
+
+.pirate-math-container .intro-content p {
+    font-size: 24px;
+    color: #ffffff;
+    margin-bottom: 24px;
+}
+
+.pirate-math-container .game-rules {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 400px;
+    text-align: left;
+}
+
+.pirate-math-container .game-rules li {
+    color: #ffffff;
+    padding: 10px;
+    margin: 10px 0;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Island Area */
+.pirate-math-container .island-area {
+    text-align: center;
+    padding: 20px;
+}
+
+.pirate-math-container .island-name {
+    font-size: 32px;
+    color: #daa520;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.pirate-math-container .island-background {
+    font-size: 120px;
+    margin: 20px 0;
+    animation: float 3s ease-in-out infinite;
+}
+
+.pirate-math-container .riddle-box {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+    border: 2px solid #daa520;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.pirate-math-container .riddle-text {
+    color: #ffffff;
+    font-size: 20px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Answer Area */
+.pirate-math-container .answer-area {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.pirate-math-container .answer-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #daa520;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 20px;
+    width: 120px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.pirate-math-container .answer-input:focus {
+    outline: none;
+    border-color: #ffd700;
+    box-shadow: 0 0 10px rgba(218, 165, 32, 0.3);
+}
+
+.pirate-math-container .hint-button {
+    background: #daa520;
+    border: none;
+    color: #1a1f2e;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pirate-math-container .hint-button:hover {
+    background: #ffd700;
+    transform: translateY(-2px);
+}
+
+/* Feedback and Hints */
+.pirate-math-container .hint-display {
+    color: #daa520;
+    font-style: italic;
+    margin: 15px 0;
+    min-height: 24px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    display: inline-block;
+}
+
+.pirate-math-container .feedback-message {
+    font-size: 24px;
+    min-height: 36px;
+    margin: 15px 0;
+    transition: all 0.3s ease;
+}
+
+.pirate-math-container .feedback-message.success {
+    color: #4ade80;
+}
+
+.pirate-math-container .feedback-message.error {
+    color: #ef4444;
+}
+
+.pirate-math-container .feedback-message.warning {
+    color: #f59e0b;
+}
+
+/* Victory Screen */
+.pirate-math-container #victory-screen h2 {
+    font-size: 48px;
+    color: #daa520;
+    margin-bottom: 30px;
+    animation: glow 2s ease-in-out infinite;
+}
+
+.pirate-math-container .victory-content {
+    margin-bottom: 40px;
+}
+
+.pirate-math-container .treasure-chest {
+    font-size: 100px;
+    margin: 20px 0;
+    animation: bounce 1s ease infinite;
+}
+
+.pirate-math-container .final-score {
+    font-size: 24px;
+    color: #daa520;
+    margin: 20px 0;
+}
+
+/* Buttons */
+.pirate-math-container .action-button {
+    background: linear-gradient(45deg, #8b4513, #daa520);
+    border: none;
+    color: #ffffff;
+    font-size: 24px;
+    padding: 16px 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.pirate-math-container .action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.pirate-math-container .action-button:active {
+    transform: translateY(0);
+}
+
+/* Animations */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes shimmer {
+    0% { opacity: 1; }
+    50% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+@keyframes glow {
+    0%, 100% { text-shadow: 0 0 10px rgba(218, 165, 32, 0.5); }
+    50% { text-shadow: 0 0 20px rgba(218, 165, 32, 0.8); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .pirate-math-container {
+        padding: 10px;
+    }
+
+    .pirate-math-container .game-content {
+        padding: 20px;
+    }
+
+    .pirate-math-container #intro-screen h2 {
+        font-size: 36px;
+    }
+
+    .pirate-math-container .intro-content p {
+        font-size: 20px;
+    }
+
+    .pirate-math-container .island-background {
+        font-size: 80px;
+    }
+
+    .pirate-math-container .riddle-text {
+        font-size: 18px;
+    }
+
+    .pirate-math-container .answer-area {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .pirate-math-container .hint-button {
+        width: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .pirate-math-container .game-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .pirate-math-container #intro-screen h2 {
+        font-size: 28px;
+    }
+
+    .pirate-math-container .island-background {
+        font-size: 60px;
+    }
+
+    .pirate-math-container .action-button {
+        font-size: 20px;
+        padding: 12px 24px;
+    }
+}

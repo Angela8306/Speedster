@@ -69,17 +69,13 @@ class GameSelection {
     }
 
     async launchGame(gameId) {
-        const game = this.gameLibrary.getGameById(gameId);
-        if (game && game.id === 'number-rush') {
-            // Import the NumberRushController
-            const { NumberRushController } = await import('../../controllers/NumberRushController.js');
-            
-            // Initialize the game with the current operation
-            const controller = new NumberRushController(this.operation);
-            controller.initialize();
-            
-            // Remove the game selection overlay
+        try {
+            await this.gameLibrary.launchGame(gameId, this.operation);
+            // Remove the game selection overlay after successful launch
             this.hide();
+        } catch (error) {
+            console.error('Error launching game:', error);
+            // You might want to show an error message to the user here
         }
     }
 
