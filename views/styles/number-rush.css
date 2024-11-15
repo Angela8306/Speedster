@@ -1,0 +1,321 @@
+.number-rush-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.back-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #ffffff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.game-content {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 32px;
+    border-radius: 15px;
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.screen {
+    display: none;
+    text-align: center;
+    width: 100%;
+}
+
+.screen.active {
+    display: block;
+}
+
+/* Start screen styling */
+#start-screen {
+    text-align: center;
+    padding: 32px;
+}
+
+
+#start-screen p {
+    font-size: 24px;
+    color: #b8c6db;
+    margin-bottom: 48px;
+    line-height: 1.5;
+}
+
+/* Combined heading styles for start and end screens */
+#start-screen h2, #end-screen h2 {
+    font-size: 64px;
+    background: linear-gradient(45deg, #7eb2ff, #ff7eb2);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-bottom: 32px;
+}
+
+/* Game stats panel styling */
+.game-stats {
+    display: flex;
+    gap: 48px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 24px 40px;
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-item {
+    text-align: center;
+    padding: 8px 16px;
+    min-width: 120px;
+}
+
+.stat-label {
+    font-size: 18px;
+    color: #b8c6db;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.stat-value {
+    font-size: 40px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+#score {
+    color: #4ade80;
+}
+
+#time {
+    color: #f59e0b;
+}
+
+#streak {
+    color: #60a5fa;
+}
+
+/* Game screen styling */
+.problem-display {
+    font-size: 64px;
+    color: #ffffff;
+    margin-bottom: 32px;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.answer-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 3px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 48px;
+    width: 160px;
+    text-align: center;
+    margin-bottom: 16px;
+    transition: all 0.3s ease;
+}
+
+.answer-input:focus {
+    outline: none;
+    border-color: #7eb2ff;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Hide number input spinners */
+.answer-input::-webkit-outer-spin-button,
+.answer-input::-webkit-inner-spin-button {
+    display: none;
+}
+
+.answer-input[type=number] {
+    appearance: textfield;
+    -webkit-appearance: textfield;
+}
+
+.action-button {
+    background: linear-gradient(45deg, #7eb2ff, #ff7eb2);
+    border: none;
+    color: #ffffff;
+    font-size: 19px;
+    padding: 16px 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.action-button:hover {
+    opacity: 0.9;
+}
+
+.action-button:active {
+    top: 4px;
+    box-shadow: none;
+}
+
+.feedback-message {
+    font-size: 32px;
+    min-height: 48px;
+}
+
+.feedback-message.correct {
+    color: #4ade80;
+}
+
+.feedback-message.incorrect {
+    color: #f87171;
+}
+
+/* End screen styling */
+#end-screen {
+    text-align: center;
+    padding: 32px;
+}
+
+.final-stats {
+    font-size: 32px;
+    color: #ffffff;
+    margin-bottom: 48px;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.final-stats p {
+    margin: 16px 0;
+}
+
+/* Combo and milestone messages */
+.combo-message, .milestone-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 48px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: fadeUpAndOut 1s ease-out forwards;
+    z-index: 10;
+}
+
+.combo-message {
+    color: #60a5fa;
+}
+
+.milestone-message {
+    color: #4ade80;
+}
+
+@keyframes fadeUpAndOut {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        transform: translate(-50%, -70%) scale(1.2);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -100%) scale(1);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .number-rush-container {
+        padding: 16px;
+    }
+
+    .game-stats {
+        padding: 16px 24px;
+        gap: 24px;
+    }
+
+    .stat-item {
+        min-width: 90px;
+    }
+
+    .stat-label {
+        font-size: 14px;
+    }
+
+    .stat-value {
+        font-size: 32px;
+    }
+
+    #start-screen h2, #end-screen h2 {
+        font-size: 48px;
+    }
+
+    .problem-display {
+        font-size: 48px;
+    }
+
+    .answer-input {
+        font-size: 36px;
+        width: 120px;
+    }
+
+    .combo-message, .milestone-message {
+        font-size: 36px;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-header {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .game-stats {
+        flex-direction: row;
+        gap: 16px;
+        padding: 16px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .stat-item {
+        min-width: 70px;
+    }
+
+    #start-screen h2, #end-screen h2 {
+        font-size: 36px;
+    }
+
+    .problem-display {
+        font-size: 36px;
+    }
+
+    .answer-input {
+        font-size: 28px;
+        width: 100px;
+    }
+
+    .combo-message, .milestone-message {
+        font-size: 28px;
+    }
+}

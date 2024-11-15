@@ -68,11 +68,18 @@ class GameSelection {
         return card;
     }
 
-    launchGame(gameId) {
+    async launchGame(gameId) {
         const game = this.gameLibrary.getGameById(gameId);
-        if (game) {
-            console.log(`Launching ${game.title} with ${this.operation} operation`);
-            // We'll implement actual game launching later
+        if (game && game.id === 'number-rush') {
+            // Import the NumberRushController
+            const { NumberRushController } = await import('../../controllers/NumberRushController.js');
+            
+            // Initialize the game with the current operation
+            const controller = new NumberRushController(this.operation);
+            controller.initialize();
+            
+            // Remove the game selection overlay
+            this.hide();
         }
     }
 
