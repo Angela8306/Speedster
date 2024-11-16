@@ -1,4 +1,4 @@
-/* Game Selection Popup Styles */
+/* Game Selection Styles */
 .game-selection-overlay {
     position: fixed;
     top: 0;
@@ -11,7 +11,7 @@
     align-items: center;
     opacity: 0;
     transition: opacity 0.3s ease;
-    z-index: 1200; /* Higher than other popups */
+    z-index: 1200;
 }
 
 .game-selection-overlay.active {
@@ -24,7 +24,7 @@
     padding: 2rem;
     max-width: 90%;
     max-height: 90vh;
-    width: 800px;
+    width: 1000px;
     position: relative;
     transform: scale(0.9);
     transition: transform 0.3s ease;
@@ -68,7 +68,7 @@
 /* Games Grid */
 .games-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
     padding: 1rem;
 }
@@ -79,9 +79,7 @@
     border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    flex-direction: column;
+    transition: all 0.3s ease;
 }
 
 .game-card:hover {
@@ -98,20 +96,68 @@
 }
 
 .game-info {
-    padding: 1rem;
+    padding: 1.5rem;
 }
 
 .game-info h3 {
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.75rem 0;
     color: #ffffff;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
 }
 
 .game-info p {
-    margin: 0;
+    margin: 0 0 1rem 0;
     color: #b8c6db;
     font-size: 0.9rem;
     line-height: 1.4;
+}
+
+/* Game Features List */
+.game-features {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 1rem;
+}
+
+.game-features li {
+    color: #b8c6db;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.game-features li:before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #4ade80;
+}
+
+/* Error Message */
+.game-error-message {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ef4444;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translate(-50%, 100%);
+        opacity: 0;
+    }
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
 }
 
 /* Responsive Design */
@@ -121,12 +167,17 @@
     }
 
     .games-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         gap: 1rem;
     }
 
     .game-selection-header h2 {
         font-size: 1.4rem;
+    }
+
+    .game-thumbnail {
+        padding: 1.5rem;
+        font-size: 2.5rem;
     }
 }
 
@@ -135,9 +186,8 @@
         grid-template-columns: 1fr;
     }
 
-    .game-thumbnail {
-        padding: 1.5rem;
-        font-size: 2.5rem;
+    .game-info h3 {
+        font-size: 1.2rem;
     }
 }
 
