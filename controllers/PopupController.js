@@ -1,4 +1,8 @@
+// controllers/PopupController.js
+
 import MathPopup from '../views/components/MathPopup.js';
+import GameSelection from '../views/components/GameSelection.js';
+import PracticeSelection from '../views/components/PracticeSelection.js';
 
 class PopupController {
     constructor(model) {
@@ -11,6 +15,7 @@ class PopupController {
     }
 
     setupEventListeners() {
+        // Operation boxes
         const operationBoxes = document.querySelectorAll('.operation-box');
         operationBoxes.forEach(box => {
             box.addEventListener('click', (e) => {
@@ -18,33 +23,79 @@ class PopupController {
                 this.showPopup(operation);
             });
         });
+
+        // Practice All button
+        const practiceAllButton = document.querySelector('.practice-all-button');
+        if (practiceAllButton) {
+            practiceAllButton.addEventListener('click', () => {
+                this.showPracticeSelection('all');
+            });
+        }
+
+        // Play Games button
+        const playGamesButton = document.querySelector('.play-games-button');
+        if (playGamesButton) {
+            playGamesButton.addEventListener('click', () => {
+                this.showGameSelection('all');
+            });
+        }
     }
 
-    async showPopup(operation) {
-        // Hide existing popup if any
+    async showPracticeSelection(operation) {
         if (this.currentPopup) {
             await this.currentPopup.hide();
         }
 
-        // Create new popup
+        const practiceSelection = new PracticeSelection();
+        const selectionElement = practiceSelection.create(operation);
+        document.body.appendChild(selectionElement);
+        
+        practiceSelection.addCloseHandler(async () => {
+            await practiceSelection.hide();
+            this.currentPopup = null;
+        });
+
+        practiceSelection.show();
+        this.currentPopup = practiceSelection;
+    }
+
+    async showGameSelection(operation) {
+        if (this.currentPopup) {
+            await this.currentPopup.hide();
+        }
+
+        const gameSelection = new GameSelection();
+        const selectionElement = gameSelection.create(operation);
+        document.body.appendChild(selectionElement);
+        
+        gameSelection.addCloseHandler(async () => {
+            await gameSelection.hide();
+            this.currentPopup = null;
+        });
+
+        gameSelection.show();
+        this.currentPopup = gameSelection;
+    }
+
+    async showPopup(operation) {
+        if (this.currentPopup) {
+            await this.currentPopup.hide();
+        }
+
         const popup = new MathPopup();
         
-        // Generate equations for all numbers (1-12)
         const allEquations = Array.from({ length: 12 }, (_, i) => 
             this.model.generateEquations(i + 1, operation)
         );
 
-        // Create and show popup
         const popupElement = popup.create(operation, allEquations);
         document.body.appendChild(popupElement);
         
-        // Add close handler
         popup.addCloseHandler(async () => {
             await popup.hide();
             this.currentPopup = null;
         });
 
-        // Show popup with animation
         popup.show();
         this.currentPopup = popup;
     }
