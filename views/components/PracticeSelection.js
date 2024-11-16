@@ -18,7 +18,9 @@ class PracticeSelection {
         header.className = 'practice-selection-header';
         
         const title = document.createElement('h2');
-        title.textContent = `${operation.charAt(0).toUpperCase() + operation.slice(1)} Practice Setup`;
+        title.textContent = operation === 'all' ? 
+            'Practice Setup' : 
+            `${operation.charAt(0).toUpperCase() + operation.slice(1)} Practice Setup`;
         
         const closeButton = document.createElement('button');
         closeButton.className = 'practice-selection-close';
@@ -153,9 +155,12 @@ class PracticeSelection {
     addStartHandler(handler) {
         this.startButton.addEventListener('click', () => {
             if (this.selectedColumns.size > 0) {
-                // Convert selected columns to URL parameters and navigate to practice.html
+                const operations = this.operation === 'all' ? 
+                    ['addition', 'subtraction', 'multiplication', 'division'] :
+                    [this.operation];
+                
                 const columns = Array.from(this.selectedColumns).join(',');
-                window.location.href = `practice.html?operation=${this.operation}&columns=${columns}`;
+                window.location.href = `practice.html?operations=${operations.join(',')}&columns=${columns}`;
             }
         });
     }

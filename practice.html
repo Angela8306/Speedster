@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Practice - Speedster</title>
+    <title>Speedster - Practice</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="views/styles/practice.css">
 </head>
@@ -11,14 +11,24 @@
     <script type="module">
         import PracticeController from './controllers/PracticeController.js';
 
-        // Get practice parameters from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const operation = urlParams.get('operation');
-        const columns = urlParams.get('columns').split(',').map(Number);
-
-        // Initialize practice
-        const practiceController = new PracticeController();
-        practiceController.initialize(operation, columns);
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Get operations (can be single or multiple)
+            const operations = urlParams.get('operations')?.split(',') || 
+                             [urlParams.get('operation')]; // Fallback for single operation
+            
+            // Get columns
+            const columns = urlParams.get('columns')?.split(',').map(Number) || [];
+            
+            if (operations.length && columns.length) {
+                const controller = new PracticeController();
+                controller.initialize(operations, columns);
+            } else {
+                console.error('Missing required parameters');
+                window.location.href = 'index.html';
+            }
+        });
     </script>
 </body>
 </html>

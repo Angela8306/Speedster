@@ -5,15 +5,15 @@ class PracticeController {
     constructor() {
         this.view = new PracticeView();
         this.model = new MathOperations();
-        this.operation = '';
+        this.operations = [];
         this.columns = [];
         this.currentProblem = null;
         this.correctCount = 0;
         this.incorrectCount = 0;
     }
 
-    initialize(operation, columns) {
-        this.operation = operation;
+    initialize(operations, columns) {
+        this.operations = Array.isArray(operations) ? operations : [operations];
         this.columns = columns;
         
         // Create and add view to DOM
@@ -32,23 +32,26 @@ class PracticeController {
     }
 
     generateProblem() {
+        // Randomly select an operation from available operations
+        const operation = this.operations[Math.floor(Math.random() * this.operations.length)];
         const num1 = this.columns[Math.floor(Math.random() * this.columns.length)];
         const num2 = Math.floor(Math.random() * 12) + 1;
-        const formats = this.getAvailableFormats(this.operation);
+        const formats = this.getAvailableFormats(operation);
         const format = formats[Math.floor(Math.random() * formats.length)];
 
-        switch(this.operation) {
+        switch(operation) {
             case 'addition':
             case 'subtraction': {
-                const largerNum = this.operation === 'subtraction' ? (num1 + num2) : num1;
-                const smallerNum = this.operation === 'subtraction' ? num1 : num2;
-                const operator = this.operation === 'addition' ? '+' : '-';
+                const largerNum = operation === 'subtraction' ? (num1 + num2) : num1;
+                const smallerNum = operation === 'subtraction' ? num1 : num2;
+                const operator = operation === 'addition' ? '+' : '-';
                 return {
                     format,
                     num1: largerNum,
                     num2: smallerNum,
                     operator,
-                    answer: this.operation === 'addition' ? (num1 + num2) : num2
+                    answer: operation === 'addition' ? (num1 + num2) : num2,
+                    operation // Add operation to problem object
                 };
             }
             case 'multiplication': {
@@ -58,7 +61,8 @@ class PracticeController {
                     num1,
                     num2,
                     operator,
-                    answer: num1 * num2
+                    answer: num1 * num2,
+                    operation
                 };
             }
             case 'division': {
@@ -71,7 +75,8 @@ class PracticeController {
                     num1: dividend,
                     num2: num1,
                     operator,
-                    answer: num2
+                    answer: num2,
+                    operation
                 };
             }
             default:
@@ -109,7 +114,7 @@ class PracticeController {
     }
 
     handleSubmit(answer) {
-        if (answer === this.currentProblem.answer) {
+        if (parseInt(answer) === this.currentProblem.answer) {
             this.correctCount++;
             this.showNewProblem();
         } else {
@@ -122,7 +127,7 @@ class PracticeController {
         this.view.updateStats(
             this.correctCount,
             this.incorrectCount,
-            this.columns.length
+            this.columns.length * this.operations.length
         );
     }
 }

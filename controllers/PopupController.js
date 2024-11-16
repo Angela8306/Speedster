@@ -28,6 +28,7 @@ class PopupController {
         const practiceAllButton = document.querySelector('.practice-all-button');
         if (practiceAllButton) {
             practiceAllButton.addEventListener('click', () => {
+                console.log('Practice All clicked');  // Debug log
                 this.showPracticeSelection('all');
             });
         }
@@ -42,6 +43,8 @@ class PopupController {
     }
 
     async showPracticeSelection(operation) {
+        console.log('Showing practice selection for:', operation);  // Debug log
+        
         if (this.currentPopup) {
             await this.currentPopup.hide();
         }
@@ -50,11 +53,18 @@ class PopupController {
         const selectionElement = practiceSelection.create(operation);
         document.body.appendChild(selectionElement);
         
+        // Add close handler
         practiceSelection.addCloseHandler(async () => {
             await practiceSelection.hide();
             this.currentPopup = null;
         });
 
+        // Add start handler - this is key for practice all functionality
+        practiceSelection.addStartHandler(() => {
+            // The handler is now set up in PracticeSelection.js
+            console.log('Start handler triggered');  // Debug log
+        });
+        
         practiceSelection.show();
         this.currentPopup = practiceSelection;
     }
