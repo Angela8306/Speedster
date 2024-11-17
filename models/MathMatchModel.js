@@ -8,33 +8,94 @@ class MathMatchModel {
         this.difficultySettings = {
             easy: {
                 gridSize: 12, // 6 pairs
-                maxNumber: 10,
+                maxNumber: 6,  // Changed to 6 for 6x6 tables
                 operations: ['addition', 'multiplication'],
+                operationRanges: {
+                    addition: { min: 1, max: 6 },      // Up to 6+6
+                    subtraction: { min: 1, max: 6 },   // Up to 6-6
+                    multiplication: { min: 1, max: 6 }, // Up to 6x6
+                },
                 divisionRange: { 
-                    divisorMax: 5,  // up to 5x table
-                    maxDividend: 25 // largest dividend for easy level
+                    divisorMax: 5,
+                    maxDividend: 25
                 }
             },
             medium: {
                 gridSize: 20, // 10 pairs
-                maxNumber: 12,
+                maxNumber: 9,  // Changed to 9 for 9x9 tables
                 operations: ['addition', 'subtraction', 'multiplication'],
+                operationRanges: {
+                    addition: { min: 1, max: 9 },      // Up to 9+9
+                    subtraction: { min: 1, max: 10 },   // Up to 9-9
+                    multiplication: { min: 1, max: 9 }, // Up to 9x9
+                },
                 divisionRange: { 
-                    divisorMax: 9,  // up to 9x table
-                    maxDividend: 81 // largest dividend for medium level
+                    divisorMax: 9,
+                    maxDividend: 81
                 }
             },
             hard: {
                 gridSize: 24, // 12 pairs
-                maxNumber: 15,
+                maxNumber: 12,  // Changed to 12 for 12x12 tables
                 operations: ['addition', 'subtraction', 'multiplication', 'division'],
+                operationRanges: {
+                    addition: { min: 1, max: 12 },      // Up to 12+12
+                    subtraction: { min: 1, max: 12 },   // Up to 12-12
+                    multiplication: { min: 1, max: 12 }, // Up to 12x12
+                },
                 divisionRange: { 
-                    divisorMax: 12,  // up to 12x table
-                    maxDividend: 144 // largest dividend overall
+                    divisorMax: 12,
+                    maxDividend: 144
                 }
             }
         };
         this.usedResults = new Set();
+    }
+
+    generateEquation(settings) {
+        const operations = this.operation !== 'all' ? [this.operation] : settings.operations;
+        const operation = operations[Math.floor(Math.random() * operations.length)];
+        
+        if (operation === 'division') {
+            return this.generateDivisionProblem(settings);
+        }
+
+        let num1, num2, result, display;
+        const range = settings.operationRanges[operation];
+        
+        switch (operation) {
+            case 'addition':
+                num1 = Math.floor(Math.random() * range.max) + 1;
+                num2 = Math.floor(Math.random() * range.max) + 1;
+                result = num1 + num2;
+                display = `${num1} + ${num2}`;
+                break;
+
+            case 'subtraction':
+                // For subtraction, ensure num1 > num2 for positive results
+                num1 = Math.floor(Math.random() * range.max) + 1;
+                num2 = Math.floor(Math.random() * num1) + 1; // Ensures num2 ≤ num1
+                result = num1 - num2;
+                display = `${num1} - ${num2}`;
+                break;
+
+            case 'multiplication':
+                num1 = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+                num2 = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+                result = num1 * num2;
+                display = `${num1} × ${num2}`;
+                break;
+
+            default:
+                throw new Error(`Unknown operation: ${operation}`);
+        }
+
+        // Ensure sums in addition don't exceed twice the max range
+        if (operation === 'addition' && result > range.max * 2) {
+            return this.generateEquation(settings);
+        }
+
+        return { display, result };
     }
 
     generateDivisionProblem(settings) {
@@ -67,7 +128,7 @@ class MathMatchModel {
             }
         }
 
-        // Remove only true duplicates (exactly same dividend, divisor, and quotient)
+        // Remove duplicates
         validDivisionFacts = validDivisionFacts.filter((fact, index, self) => 
             index === self.findIndex(f => 
                 f.dividend === fact.dividend && 
@@ -76,7 +137,6 @@ class MathMatchModel {
             )
         );
 
-        // Shuffle the facts array to get a random one
         const randomIndex = Math.floor(Math.random() * validDivisionFacts.length);
         const chosen = validDivisionFacts[randomIndex];
         
@@ -84,50 +144,6 @@ class MathMatchModel {
             display: `${chosen.dividend} ÷ ${chosen.divisor}`,
             result: chosen.quotient
         };
-    }
-
-    generateEquation(settings) {
-        const operations = this.operation !== 'all' ? [this.operation] : settings.operations;
-        const operation = operations[Math.floor(Math.random() * operations.length)];
-        const max = settings.maxNumber;
-        
-        if (operation === 'division') {
-            return this.generateDivisionProblem(settings);
-        }
-
-        // Rest of the operation cases remain the same...
-        let num1, num2, result, display;
-        switch (operation) {
-            case 'addition':
-                num1 = Math.floor(Math.random() * max) + 1;
-                num2 = Math.floor(Math.random() * max) + 1;
-                result = num1 + num2;
-                display = `${num1} + ${num2}`;
-                break;
-
-            case 'subtraction':
-                num2 = Math.floor(Math.random() * max) + 1;
-                result = Math.floor(Math.random() * max) + 1;
-                num1 = result + num2;
-                display = `${num1} - ${num2}`;
-                break;
-
-            case 'multiplication':
-                num1 = Math.floor(Math.random() * (Math.floor(max/2))) + 1;
-                num2 = Math.floor(Math.random() * (Math.floor(max/2))) + 1;
-                result = num1 * num2;
-                display = `${num1} × ${num2}`;
-                break;
-
-            default:
-                throw new Error(`Unknown operation: ${operation}`);
-        }
-
-        if (result > max || num1 > max || num2 > max) {
-            return this.generateEquation(settings);
-        }
-
-        return { display, result };
     }
 
     generateCardPairs() {
@@ -138,7 +154,7 @@ class MathMatchModel {
         this.usedResults.clear();
 
         let attempts = 0;
-        const maxAttempts = 500; // Increased for better coverage
+        const maxAttempts = 500;
 
         while (pairs.length < numPairs && attempts < maxAttempts) {
             attempts++;
@@ -175,10 +191,8 @@ class MathMatchModel {
     }
 
     shuffleCards(pairs) {
-        // Create array of all cards (equations and results)
         const cards = pairs.flatMap(pair => [pair.equation, pair.result]);
         
-        // Fisher-Yates shuffle
         for (let i = cards.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [cards[i], cards[j]] = [cards[j], cards[i]];
@@ -209,16 +223,14 @@ class MathMatchModel {
     }
 
     calculateScore(moves, timeElapsed) {
-        const perfectMoves = this.getTotalPairs() * 2; // Minimum possible moves
-        const timeWeight = 0.5; // Lower weight for time to prioritize accuracy
+        const perfectMoves = this.getTotalPairs() * 2;
+        const timeWeight = 0.5;
         
-        // Base score calculation
         let score = Math.max(
             1000 - (moves - perfectMoves) * 10 - timeElapsed * timeWeight,
             0
         );
 
-        // Difficulty multiplier
         const difficultyMultiplier = {
             easy: 1,
             medium: 1.5,
