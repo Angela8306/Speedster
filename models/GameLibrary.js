@@ -52,8 +52,8 @@ class GameLibrary {
                 features: [
                     'Space-themed math adventure',
                     'Guide your rocket through challenges',
-                    'Collect space items',
-                    'Navigate through asteroid fields'
+                    'Destroy asteroids with correct answers',
+                    'Progressive difficulty levels'
                 ],
                 supportedOperations: ['addition', 'multiplication', 'division']
             },
@@ -125,13 +125,18 @@ class GameLibrary {
                     pirateController.initialize();
                     break;
 
-                case 'math-match':  // Add Math Match launch logic
+                case 'math-match':
                     const { default: MathMatchController } = await import('../controllers/MathMatchController.js');
                     const matchController = new MathMatchController(operation, 'easy');
                     matchController.initialize();
                     break;
-                    
+
                 case 'space-math':
+                    const { default: SpaceMathController } = await import('../controllers/SpaceMathController.js');
+                    const spaceController = new SpaceMathController(operation);
+                    await spaceController.initialize();
+                    break;
+                    
                 case 'math-monsters':
                 case 'candy-math':
                     throw new Error(`${game.title} is coming soon! Stay tuned for more math adventures!`);
@@ -141,8 +146,7 @@ class GameLibrary {
             }
         } catch (error) {
             console.error(`Error launching game: ${error.message}`);
-            // You might want to show an error message to the user here
-            throw error; // Re-throw to handle in the calling code
+            throw error;
         }
     }
 

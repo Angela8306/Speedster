@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="views/styles/number-rush.css">
     <link rel="stylesheet" href="views/styles/pirate-math.css">
     <link rel="stylesheet" href="views/styles/math-match.css">
+    <link rel="stylesheet" href="views/styles/space-math.css">
 </head>
 <body>
     <header>
@@ -61,13 +62,14 @@
     <script type="module">
         import MathOperations from './models/MathOperations.js';
         import PopupController from './controllers/PopupController.js';
-
+    
         // Initialize the application
         document.addEventListener('DOMContentLoaded', () => {
             const mathModel = new MathOperations();
             const popupController = new PopupController(mathModel);
             popupController.initialize();
         });
+        
     </script>
 </body>
 </html>
