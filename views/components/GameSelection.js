@@ -54,7 +54,7 @@ class GameSelection {
         return overlay;
     }
 
-    createGameCard({ id, title, description, thumbnail, features }) {
+    createGameCard({ id, title, description, thumbnail, features, supportedOperations }) {
         const card = document.createElement('div');
         card.className = 'game-card';
         
@@ -90,15 +90,76 @@ class GameSelection {
         card.appendChild(infoDiv);
 
         card.addEventListener('click', () => {
-            this.launchGame(id);
+            if (this.operation === 'all') {
+                this.showOperationPicker(id, supportedOperations);
+            } else {
+                this.launchGame(id, this.operation);
+            }
         });
 
         return card;
     }
 
-    async launchGame(gameId) {
+    showOperationPicker(gameId, supportedOperations) {
+        const picker = document.createElement('div');
+        picker.className = 'operation-picker-overlay';
+        
+        const content = document.createElement('div');
+        content.className = 'operation-picker-content';
+        
+        const title = document.createElement('h3');
+        title.textContent = 'Choose an Operation';
+        
+        const operationsList = document.createElement('div');
+        operationsList.className = 'operations-list';
+        
+        const operations = [
+            { id: 'addition', label: 'Addition', icon: '+' },
+            { id: 'subtraction', label: 'Subtraction', icon: '-' },
+            { id: 'multiplication', label: 'Multiplication', icon: '×' },
+            { id: 'division', label: 'Division', icon: '÷' }
+        ];
+        
+        operations.forEach(op => {
+            if (supportedOperations.includes(op.id)) {
+                const button = document.createElement('button');
+                button.className = 'operation-choice';
+                button.innerHTML = `
+                    <span class="operation-icon">${op.icon}</span>
+                    <span class="operation-label">${op.label}</span>
+                `;
+                button.addEventListener('click', () => {
+                    picker.remove();
+                    this.launchGame(gameId, op.id);
+                });
+                operationsList.appendChild(button);
+            }
+        });
+        
+        const cancelButton = document.createElement('button');
+        cancelButton.className = 'cancel-button';
+        cancelButton.textContent = 'Cancel';
+        cancelButton.addEventListener('click', () => picker.remove());
+        
+        content.appendChild(title);
+        content.appendChild(operationsList);
+        content.appendChild(cancelButton);
+        picker.appendChild(content);
+        
+        // Click outside to close
+        picker.addEventListener('click', (e) => {
+            if (e.target === picker) {
+                picker.remove();
+            }
+        });
+        
+        document.body.appendChild(picker);
+        requestAnimationFrame(() => picker.classList.add('active'));
+    }
+
+    async launchGame(gameId, operation) {
         try {
-            await this.gameLibrary.launchGame(gameId, this.operation);
+            await this.gameLibrary.launchGame(gameId, operation);
             // Remove the game selection overlay after successful launch
             this.hide();
         } catch (error) {
