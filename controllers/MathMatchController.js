@@ -2,26 +2,35 @@
 
 class MathMatchController {
     constructor(operation = 'all', difficulty = 'easy') {
+        console.log('MathMatchController initialized with operation:', operation); // Debug log
         this.operation = operation;
         this.difficulty = difficulty;
         this.resetGameState();
     }
 
+    async changeDifficulty(newDifficulty) {
+        this.difficulty = newDifficulty;
+        this.resetGameState();
+        await this.initialize();
+    }
+
     resetGameState() {
-        this.model = null;
-        this.view = null;
         this.firstCard = null;
         this.secondCard = null;
         this.isProcessing = false;
         this.moveCount = 0;
         this.matchedPairs = 0;
-        this.timer = null;
         this.timeElapsed = 0;
+        if (this.timer) {
+            clearInterval(this.timer);
+            this.timer = null;
+        }
     }
 
     async initialize() {
         try {
-            this.resetGameState(); // Reset all game state when initializing
+            // Reset game state
+            this.resetGameState();
 
             // Import dependencies
             const { default: MathMatchModel } = await import('../models/MathMatchModel.js');
@@ -30,6 +39,9 @@ class MathMatchController {
             // Initialize model and view
             this.model = new MathMatchModel(this.operation, this.difficulty);
             this.view = new MathMatchView();
+
+            // Set initial difficulty in view
+            this.view.setDifficulty(this.difficulty);
 
             // Create the game board
             document.body.innerHTML = ''; // Clear existing content
@@ -55,6 +67,15 @@ class MathMatchController {
         } catch (error) {
             console.error('Error initializing Math Match:', error);
         }
+    }
+
+    async changeDifficulty(newDifficulty) {
+        this.difficulty = newDifficulty;
+        if (this.model) {
+            this.model.difficulty = newDifficulty;
+        }
+        this.resetGameState();
+        await this.initialize();
     }
 
     async handleCardClick(card) {
@@ -138,9 +159,7 @@ class MathMatchController {
 
         // Add difficulty change handler
         this.view.addDifficultyHandler((newDifficulty) => {
-            this.difficulty = newDifficulty;
-            this.stopTimer();
-            this.initialize();
+            this.changeDifficulty(newDifficulty);
         });
     }
 

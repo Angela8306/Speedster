@@ -6,6 +6,7 @@ class MathMatchView {
         this.gameBoard = null;
         this.cards = [];
         this.cardClickHandler = null;
+        this.currentDifficulty = 'easy'; // Add this line to track current difficulty
     }
 
     create() {
@@ -50,10 +51,18 @@ class MathMatchView {
         const difficultySelect = document.createElement('select');
         difficultySelect.className = 'difficulty-select';
         difficultySelect.id = 'difficulty-select';
-        ['easy', 'medium', 'hard'].forEach(level => {
+        
+        const difficulties = [
+            { value: 'easy', label: 'Easy' },
+            { value: 'medium', label: 'Medium' },
+            { value: 'hard', label: 'Hard' }
+        ];
+
+        difficulties.forEach(diff => {
             const option = document.createElement('option');
-            option.value = level;
-            option.textContent = level.charAt(0).toUpperCase() + level.slice(1);
+            option.value = diff.value;
+            option.textContent = diff.label;
+            option.selected = diff.value === this.currentDifficulty;
             difficultySelect.appendChild(option);
         });
     
@@ -65,11 +74,27 @@ class MathMatchView {
         rightSection.appendChild(difficultySelect);
         rightSection.appendChild(newGameButton);
     
-        // Add all sections to header
         header.appendChild(leftSection);
         header.appendChild(rightSection);
     
         return header;
+    }
+
+    setDifficulty(difficulty) {
+        this.currentDifficulty = difficulty;
+        const difficultySelect = document.getElementById('difficulty-select');
+        if (difficultySelect) {
+            difficultySelect.value = difficulty;
+        }
+    }
+
+    addDifficultyHandler(handler) {
+        const difficultySelect = document.getElementById('difficulty-select');
+        difficultySelect.addEventListener('change', (e) => {
+            const newDifficulty = e.target.value;
+            this.setDifficulty(newDifficulty);
+            handler(newDifficulty);
+        });
     }
 
     createStatsBar() {
@@ -110,9 +135,20 @@ class MathMatchView {
     setupBoard(cards) {
         this.gameBoard.innerHTML = '';
         this.cards = [];
-    
-        // Force a clean layout
-        this.gameBoard.style.gridTemplateColumns = 'repeat(4, 1fr)';
+
+        // Calculate columns based on difficulty
+        let columns;
+        const totalCards = cards.length;
+        if (totalCards <= 12) {
+            columns = 4; // Easy: 3x4 grid
+        } else if (totalCards <= 20) {
+            columns = 5; // Medium: 4x5 grid
+        } else {
+            columns = 6; // Hard: 4x6 grid
+        }
+
+        // Update grid layout
+        this.gameBoard.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
         
         cards.forEach((cardData, index) => {
             const card = this.createCard(cardData, index);

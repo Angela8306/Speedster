@@ -9,63 +9,94 @@ class MathMatchModel {
             easy: {
                 gridSize: 12, // 6 pairs
                 maxNumber: 10,
-                operations: ['addition', 'multiplication']
+                operations: ['addition', 'multiplication'],
+                divisionRange: { 
+                    divisorMax: 5,  // up to 5x table
+                    maxDividend: 25 // largest dividend for easy level
+                }
             },
             medium: {
                 gridSize: 20, // 10 pairs
                 maxNumber: 12,
-                operations: ['addition', 'subtraction', 'multiplication']
+                operations: ['addition', 'subtraction', 'multiplication'],
+                divisionRange: { 
+                    divisorMax: 9,  // up to 9x table
+                    maxDividend: 81 // largest dividend for medium level
+                }
             },
             hard: {
                 gridSize: 24, // 12 pairs
                 maxNumber: 15,
-                operations: ['addition', 'subtraction', 'multiplication', 'division']
+                operations: ['addition', 'subtraction', 'multiplication', 'division'],
+                divisionRange: { 
+                    divisorMax: 12,  // up to 12x table
+                    maxDividend: 144 // largest dividend overall
+                }
             }
+        };
+        this.usedResults = new Set();
+    }
+
+    generateDivisionProblem(settings) {
+        const range = settings.divisionRange;
+        
+        // Get all valid division facts for this difficulty
+        let validDivisionFacts = [];
+        
+        // Generate division facts based on multiplication tables
+        for (let divisor = 1; divisor <= range.divisorMax; divisor++) {
+            for (let multiplier = 2; multiplier <= 12; multiplier++) {
+                const dividend = divisor * multiplier;
+                if (dividend <= range.maxDividend) {
+                    // Add the division fact
+                    validDivisionFacts.push({
+                        dividend: dividend,
+                        divisor: divisor,
+                        quotient: multiplier
+                    });
+                    
+                    // Add the reversed version if it's within range and would give a different result
+                    if (multiplier <= range.divisorMax && dividend <= range.maxDividend) {
+                        validDivisionFacts.push({
+                            dividend: dividend,
+                            divisor: multiplier,
+                            quotient: divisor
+                        });
+                    }
+                }
+            }
+        }
+
+        // Remove only true duplicates (exactly same dividend, divisor, and quotient)
+        validDivisionFacts = validDivisionFacts.filter((fact, index, self) => 
+            index === self.findIndex(f => 
+                f.dividend === fact.dividend && 
+                f.divisor === fact.divisor && 
+                f.quotient === fact.quotient
+            )
+        );
+
+        // Shuffle the facts array to get a random one
+        const randomIndex = Math.floor(Math.random() * validDivisionFacts.length);
+        const chosen = validDivisionFacts[randomIndex];
+        
+        return {
+            display: `${chosen.dividend} ÷ ${chosen.divisor}`,
+            result: chosen.quotient
         };
     }
 
-    generateCardPairs() {
-        const settings = this.difficultySettings[this.difficulty];
-        const numPairs = settings.gridSize / 2;
-        const pairs = [];
-        const usedEquations = new Set();
-
-        while (pairs.length < numPairs) {
-            const equation = this.generateEquation(settings);
-            const equationString = equation.display;
-
-            // Avoid duplicate equations
-            if (!usedEquations.has(equationString)) {
-                usedEquations.add(equationString);
-                pairs.push({
-                    equation: {
-                        type: 'equation',
-                        display: equationString,
-                        value: equation.result.toString()
-                    },
-                    result: {
-                        type: 'result',
-                        display: equation.result.toString(),
-                        value: equation.result.toString()
-                    }
-                });
-            }
-        }
-
-        this.pairs = this.shuffleCards(pairs);
-        return this.pairs;
-    }
-
     generateEquation(settings) {
-        let operations = settings.operations;
-        if (this.operation !== 'all') {
-            operations = [this.operation];
-        }
-
+        const operations = this.operation !== 'all' ? [this.operation] : settings.operations;
         const operation = operations[Math.floor(Math.random() * operations.length)];
         const max = settings.maxNumber;
-        let num1, num2, result, display;
+        
+        if (operation === 'division') {
+            return this.generateDivisionProblem(settings);
+        }
 
+        // Rest of the operation cases remain the same...
+        let num1, num2, result, display;
         switch (operation) {
             case 'addition':
                 num1 = Math.floor(Math.random() * max) + 1;
@@ -77,29 +108,70 @@ class MathMatchModel {
             case 'subtraction':
                 num2 = Math.floor(Math.random() * max) + 1;
                 result = Math.floor(Math.random() * max) + 1;
-                num1 = result + num2; // Ensures positive result
+                num1 = result + num2;
                 display = `${num1} - ${num2}`;
                 break;
 
             case 'multiplication':
-                num1 = Math.floor(Math.random() * (max/2)) + 1;
-                num2 = Math.floor(Math.random() * (max/2)) + 1;
+                num1 = Math.floor(Math.random() * (Math.floor(max/2))) + 1;
+                num2 = Math.floor(Math.random() * (Math.floor(max/2))) + 1;
                 result = num1 * num2;
                 display = `${num1} × ${num2}`;
-                break;
-
-            case 'division':
-                num2 = Math.floor(Math.random() * (max/2)) + 1;
-                result = Math.floor(Math.random() * (max/2)) + 1;
-                num1 = result * num2; // Ensures whole number result
-                display = `${num1} ÷ ${num2}`;
                 break;
 
             default:
                 throw new Error(`Unknown operation: ${operation}`);
         }
 
+        if (result > max || num1 > max || num2 > max) {
+            return this.generateEquation(settings);
+        }
+
         return { display, result };
+    }
+
+    generateCardPairs() {
+        const settings = this.difficultySettings[this.difficulty];
+        const numPairs = settings.gridSize / 2;
+        const pairs = [];
+        const usedEquations = new Set();
+        this.usedResults.clear();
+
+        let attempts = 0;
+        const maxAttempts = 500; // Increased for better coverage
+
+        while (pairs.length < numPairs && attempts < maxAttempts) {
+            attempts++;
+            try {
+                const equation = this.generateEquation(settings);
+                const equationString = equation.display;
+                const resultString = equation.result.toString();
+
+                if (!usedEquations.has(equationString) && !this.usedResults.has(resultString)) {
+                    usedEquations.add(equationString);
+                    this.usedResults.add(resultString);
+                    
+                    pairs.push({
+                        equation: {
+                            type: 'equation',
+                            display: equationString,
+                            value: resultString
+                        },
+                        result: {
+                            type: 'result',
+                            display: resultString,
+                            value: resultString
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error generating equation:', error);
+                continue;
+            }
+        }
+
+        this.pairs = this.shuffleCards(pairs);
+        return this.pairs;
     }
 
     shuffleCards(pairs) {

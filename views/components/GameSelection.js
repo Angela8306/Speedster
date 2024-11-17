@@ -158,10 +158,18 @@ class GameSelection {
     }
 
     async launchGame(gameId, operation) {
+        console.log('Launching game with operation:', operation);
         try {
-            await this.gameLibrary.launchGame(gameId, operation);
-            // Remove the game selection overlay after successful launch
-            this.hide();
+            if (gameId === 'math-match') {
+                // Fix the import path - go up one level from views/components to root
+                const { default: MathMatchController } = await import('../../controllers/MathMatchController.js');
+                const controller = new MathMatchController(operation);
+                await controller.initialize();
+                this.hide();
+            } else {
+                await this.gameLibrary.launchGame(gameId, operation);
+                this.hide();
+            }
         } catch (error) {
             console.error('Error launching game:', error);
             // Show error message to user
