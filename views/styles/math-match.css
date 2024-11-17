@@ -1,0 +1,396 @@
+/* views/styles/math-match.css */
+
+/* Base Container and Layout */
+.math-match-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    box-sizing: border-box;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #1a1f2e;
+    color: #ffffff;
+    overflow-y: auto;
+}
+
+/* Game Header */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    margin-bottom: 1rem;
+}
+
+.header-left {
+    flex: 0 0 auto;
+}
+
+.header-right {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+/* Left side (Back button) */
+.title-section {
+    position: absolute;
+    left: 1rem;
+}
+
+/* Center (Title) */
+.game-title {
+    width: 100%;
+    text-align: center;
+    margin: 0;
+    font-size: 2rem;
+    color: #ffffff;
+}
+
+/* Right side (Controls) */
+.controls-section {
+    position: absolute;
+    right: 1rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.back-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.back-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(-2px);
+}
+
+.difficulty-select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.difficulty-select option {
+    background-color: #1a1f2e;
+    color: #ffffff;
+}
+
+.new-game-button {
+    background: linear-gradient(45deg, #7eb2ff, #ff7eb2);
+    border: none;
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.new-game-button:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+/* Stats Bar */
+.stats-bar {
+    position: sticky;
+    top: 0;
+    background-color: rgba(26, 31, 46, 0.95);
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 0.75rem;
+    z-index: 100;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+}
+
+.stat-item {
+    text-align: center;
+    min-width: 100px;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.9rem;
+    color: #b8c6db;
+    margin-bottom: 0.3rem;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+/* Game Board */
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    padding: 0.75rem;
+    margin: 0 auto;
+    max-width: 900px;
+    width: 100%;
+}
+
+/* Card Styles */
+.card {
+    aspect-ratio: 3/4;
+    perspective: 1000px;
+    cursor: pointer;
+    width: 100%;
+    min-height: 100px;
+    max-height: 180px;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+.card-front {
+    background: linear-gradient(45deg, #2a3143, #1a1f2e);
+    color: #7eb2ff;
+    font-size: 1.75rem;
+}
+
+.card-back {
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotateY(180deg);
+    font-size: 1.25rem;
+}
+
+/* Card Type Specific Styles */
+.equation-card {
+    color: #7eb2ff;
+    font-family: monospace;
+}
+
+.result-card {
+    color: #ff7eb2;
+    font-weight: bold;
+}
+
+/* Card Interactions */
+.card:hover:not(.flipped):not(.matched) .card-inner {
+    transform: scale(1.05);
+}
+
+.card:hover:not(.flipped):not(.matched) .card-front {
+    border-color: rgba(126, 178, 255, 0.5);
+    box-shadow: 0 0 15px rgba(126, 178, 255, 0.3);
+}
+
+.card.matched .card-back {
+    border-color: #4ade80;
+    background: rgba(74, 222, 128, 0.1);
+}
+
+.card.mismatched .card-back {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Match/Mismatch Animations */
+@keyframes matchPulse {
+    0% { transform: scale(1) rotateY(180deg); }
+    50% { transform: scale(1.05) rotateY(180deg); }
+    100% { transform: scale(1) rotateY(180deg); }
+}
+
+@keyframes mismatchShake {
+    0%, 100% { transform: translateX(0) rotateY(180deg); }
+    25% { transform: translateX(-10px) rotateY(180deg); }
+    75% { transform: translateX(10px) rotateY(180deg); }
+}
+
+.card.matched .card-inner {
+    animation: matchPulse 0.5s ease;
+}
+
+.card.mismatched .card-inner {
+    animation: mismatchShake 0.5s ease;
+}
+
+/* Game Complete Overlay */
+.game-complete-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.game-complete-content {
+    background: #1a1f2e;
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    animation: slideUp 0.5s ease;
+}
+
+.game-complete-content h2 {
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+}
+
+.complete-stats {
+    margin-bottom: 2rem;
+}
+
+.complete-stats p {
+    color: #b8c6db;
+    margin: 0.5rem 0;
+}
+
+.complete-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.play-again-btn, .home-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.play-again-btn {
+    background: #7eb2ff;
+    color: #1a1f2e;
+}
+
+.home-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+}
+
+.play-again-btn:hover, .home-btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (min-height: 800px) {
+    .card {
+        max-height: 200px;
+    }
+}
+
+@media (max-height: 700px) {
+    .card {
+        max-height: 150px;
+    }
+    
+    .card-front {
+        font-size: 1.5rem;
+    }
+    
+    .card-back {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .game-header {
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .header-left, .header-right {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .header-right {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .math-match-container {
+        padding: 0.5rem;
+    }
+
+    .game-title {
+        font-size: 1.5rem;
+    }
+
+    .stats-bar {
+        gap: 1rem;
+    }
+
+    .stat-value {
+        font-size: 1.2rem;
+    }
+
+    .complete-buttons {
+        flex-direction: column;
+    }
+}

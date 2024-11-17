@@ -125,7 +125,12 @@ class GameLibrary {
                     pirateController.initialize();
                     break;
 
-                case 'math-match':
+                case 'math-match':  // Add Math Match launch logic
+                    const { default: MathMatchController } = await import('../controllers/MathMatchController.js');
+                    const matchController = new MathMatchController(operation, 'easy');
+                    matchController.initialize();
+                    break;
+                    
                 case 'space-math':
                 case 'math-monsters':
                 case 'candy-math':
