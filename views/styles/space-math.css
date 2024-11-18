@@ -179,8 +179,8 @@
 /* Asteroids */
 .space-math-container .asteroid {
     position: absolute;
-    width: 80px;
-    height: 80px;
+    width: 100px;  /* Reduced from 120px */
+    height: 100px; /* Reduced from 120px to maintain aspect ratio */
     background: linear-gradient(45deg, #666666, #333333);
     border: 2px solid rgba(255, 255, 255, 0.2);
     border-radius: 15% 50% 30% 40%;
@@ -195,13 +195,15 @@
 
 .space-math-container .asteroid .problem {
     color: #fff;
-    font-size: 1.2rem;
+    font-size: 1.3rem;  /* Reduced from 1.5rem */
     text-align: center;
-    padding: 10px;
+    padding: 12px;      /* Adjusted from 15px */
     background: rgba(0, 0, 0, 0.7);
     border-radius: 5px;
     pointer-events: none;
     text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    white-space: nowrap; /* Prevent line breaks */
+    min-width: 80px;    /* Adjusted minimum width */
 }
 
 .space-math-container .asteroid.highlighted {
@@ -487,12 +489,13 @@
     }
 
     .space-math-container .asteroid {
-        width: 60px;
-        height: 60px;
+        width: 90px;    /* Adjusted from 100px */
+        height: 90px;
     }
 
     .space-math-container .asteroid .problem {
-        font-size: 1rem;
+        font-size: 1.2rem;
+        padding: 10px;
     }
 
     .space-math-container .level-up-announcement {
@@ -524,5 +527,15 @@
 
     .space-math-container .submit-button {
         padding: 0.5rem 1rem;
+    }
+
+    .space-math-container .asteroid {
+        width: 80px;
+        height: 80px;
+    }
+
+    .space-math-container .asteroid .problem {
+        font-size: 1.1rem;
+        padding: 8px;
     }
 }

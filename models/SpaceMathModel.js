@@ -12,11 +12,11 @@ class SpaceMathModel {
         
         // Level settings
         this.levelSettings = {
-            1: { speed: 0.2, maxNum: 10, asteroidInterval: 4000 },   // Starting speed unchanged
-            2: { speed: 0.25, maxNum: 12, asteroidInterval: 3800 },  // Smaller increment from 0.35
-            3: { speed: 0.3, maxNum: 15, asteroidInterval: 3600 },   // Smaller increment from 0.5
-            4: { speed: 0.35, maxNum: 20, asteroidInterval: 3400 },  // Smaller increment from 0.7
-            5: { speed: 0.4, maxNum: 25, asteroidInterval: 3200 }    // Smaller increment from 0.9
+            1: { speed: 0.2, asteroidInterval: 4000 },
+            2: { speed: 0.25, asteroidInterval: 3800 },
+            3: { speed: 0.3, asteroidInterval: 3600 },
+            4: { speed: 0.35, asteroidInterval: 3400 },
+            5: { speed: 0.4, asteroidInterval: 3200 }
         };
 
         // Power-up types
@@ -28,47 +28,57 @@ class SpaceMathModel {
     }
 
     generateProblem() {
-        const settings = this.levelSettings[this.level];
         const operations = this.operation === 'all' ? 
             ['addition', 'subtraction', 'multiplication', 'division'] : [this.operation];
         
         const operation = operations[Math.floor(Math.random() * operations.length)];
         let problem = { question: '', answer: 0, points: 10 };
 
+        // Helper function to get random number between min and max (inclusive)
+        const getRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
         switch(operation) {
-            case 'addition':
-                const addNum1 = Math.ceil(Math.random() * settings.maxNum);
-                const addNum2 = Math.ceil(Math.random() * settings.maxNum);
-                problem.question = `${addNum1} + ${addNum2}`;
-                problem.answer = addNum1 + addNum2;
+            case 'addition': {
+                // Generate numbers from 1 to 12
+                const num1 = getRandomNumber(1, 12);
+                const num2 = getRandomNumber(1, 12);
+                problem.question = `${num1} + ${num2}`;
+                problem.answer = num1 + num2;
                 break;
+            }
 
-            case 'subtraction':
-                // Generate subtraction that doesn't result in negative numbers
-                const subNum2 = Math.ceil(Math.random() * settings.maxNum);
-                const subNum1 = subNum2 + Math.ceil(Math.random() * settings.maxNum);
-                problem.question = `${subNum1} - ${subNum2}`;
-                problem.answer = subNum1 - subNum2;
-                problem.points = 15; // Slightly more points than addition
+            case 'subtraction': {
+                // Generate subtraction problems based on possible addition results (1+1 to 12+12)
+                const minSum = 2;  // Result of 1+1
+                const maxSum = 24; // Result of 12+12
+                const result = getRandomNumber(minSum, maxSum);
+                const subtractor = getRandomNumber(1, Math.min(12, result - 1));
+                problem.question = `${result} - ${subtractor}`;
+                problem.answer = result - subtractor;
+                problem.points = 15;
                 break;
+            }
 
-            case 'multiplication':
-                const factor1 = Math.ceil(Math.random() * Math.sqrt(settings.maxNum));
-                const factor2 = Math.ceil(Math.random() * Math.sqrt(settings.maxNum));
+            case 'multiplication': {
+                // Generate numbers from 1 to 12
+                const factor1 = getRandomNumber(1, 12);
+                const factor2 = getRandomNumber(1, 12);
                 problem.question = `${factor1} × ${factor2}`;
                 problem.answer = factor1 * factor2;
                 problem.points = 20;
                 break;
+            }
 
-            case 'division':
-                // Generate division problems that result in whole numbers
-                const divisor = Math.ceil(Math.random() * Math.sqrt(settings.maxNum));
-                const quotient = Math.ceil(Math.random() * Math.sqrt(settings.maxNum));
+            case 'division': {
+                // Generate division problems from results of 1x1 to 12x12
+                const divisor = getRandomNumber(1, 12);
+                const quotient = getRandomNumber(1, 12);
                 const dividend = divisor * quotient;
                 problem.question = `${dividend} ÷ ${divisor}`;
                 problem.answer = quotient;
                 problem.points = 25;
                 break;
+            }
         }
 
         return problem;
