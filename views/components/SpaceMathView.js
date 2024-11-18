@@ -6,7 +6,32 @@ class SpaceMathView {
         this.answerCallbacks = new Map();
     }
 
+    setupEventListeners() {
+        // Remove mouse/touch movement handlers, keep other event listeners
+        
+        // Handle back button
+        const backButton = document.getElementById('back-button');
+        if (backButton) {
+            backButton.addEventListener('click', () => {
+                if (this.onBackClicked) {
+                    this.onBackClicked();
+                }
+            });
+        }
+
+        // Handle pause button
+        const pauseButton = document.getElementById('pause-button');
+        if (pauseButton) {
+            pauseButton.addEventListener('click', () => {
+                if (this.onPauseClicked) {
+                    this.onPauseClicked();
+                }
+            });
+        }
+    }
+
     create() {
+        // Previous container and header creation code remains the same...
         this.container = document.createElement('div');
         this.container.className = 'space-math-container';
 
@@ -30,7 +55,7 @@ class SpaceMathView {
             this.gameArea.appendChild(starLayer);
         }
 
-        // Create rocket
+        // Create static rocket
         this.rocket = document.createElement('div');
         this.rocket.className = 'rocket';
         this.rocket.innerHTML = `
@@ -42,6 +67,9 @@ class SpaceMathView {
                 <div class="flame-inner"></div>
             </div>
         `;
+        // Position rocket statically at the bottom center
+        this.rocket.style.left = '50%';
+        this.rocket.style.transform = 'translateX(-50%)';
         this.gameArea.appendChild(this.rocket);
 
         // Add input panel for answers
@@ -238,12 +266,6 @@ class SpaceMathView {
         this.gameArea.appendChild(powerUpElement);
     }
 
-    moveRocket(x) {
-        if (this.rocket) {
-            this.rocket.style.left = `${x}%`;
-        }
-    }
-
     getRocketBounds() {
         return this.rocket ? this.rocket.getBoundingClientRect() : null;
     }
@@ -251,10 +273,56 @@ class SpaceMathView {
     destroyAsteroid(asteroidId) {
         const asteroid = document.getElementById(`asteroid-${asteroidId}`);
         if (asteroid) {
-            asteroid.classList.add('destroyed');
-            setTimeout(() => asteroid.remove(), 500);
-            this.answerCallbacks.delete(asteroidId);
+            // Create and show laser beam
+            this.shootLaser(asteroid);
+            
+            // Add destroyed class after laser hits
+            setTimeout(() => {
+                asteroid.classList.add('destroyed');
+                setTimeout(() => asteroid.remove(), 500);
+                this.answerCallbacks.delete(asteroidId);
+            }, 200); // Delay explosion until laser hits
         }
+    }
+
+    shootLaser(targetAsteroid) {
+        // Create laser beam element
+        const laser = document.createElement('div');
+        const laserInner = document.createElement('div');
+        laser.className = 'laser-beam';
+        laserInner.className = 'laser-beam-inner';
+        laser.appendChild(laserInner);
+        
+        // Get positions for laser start (rocket) and end (asteroid)
+        const rocketRect = this.rocket.getBoundingClientRect();
+        const asteroidRect = targetAsteroid.getBoundingClientRect();
+        const gameAreaRect = this.gameArea.getBoundingClientRect();
+        
+        // Calculate start and end positions relative to game area
+        const startX = rocketRect.left + rocketRect.width / 2 - gameAreaRect.left;
+        const startY = rocketRect.top - gameAreaRect.top;
+        const endX = asteroidRect.left + asteroidRect.width / 2 - gameAreaRect.left;
+        const endY = asteroidRect.top + asteroidRect.height / 2 - gameAreaRect.top;
+        
+        // Calculate angle and length for the laser
+        const angle = Math.atan2(endY - startY, endX - startX) * (180 / Math.PI); // Convert to degrees
+        const length = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+        
+        // Position the outer container
+        laser.style.position = 'absolute';
+        laser.style.left = `${startX}px`;
+        laser.style.top = `${startY}px`;
+        laser.style.width = `${length}px`;
+        laser.style.transform = `rotate(${angle}deg)`;
+        laser.style.transformOrigin = 'left center';
+        
+        // Add laser to game area
+        this.gameArea.appendChild(laser);
+        
+        // Remove laser after animation
+        setTimeout(() => {
+            laser.remove();
+        }, 200);
     }
 
     collectPowerUp(powerUpId) {
