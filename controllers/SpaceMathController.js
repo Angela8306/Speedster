@@ -6,6 +6,7 @@ class SpaceMathController {
         this.powerUpTimer = 0;
         this.activeAnimationFrame = null;
         this.activePowerUps = new Map();
+        this.isPaused = false;  // Add this line
         // Bind the game loop to preserve context
         this.gameLoop = this.gameLoop.bind(this);
     }
@@ -70,14 +71,38 @@ class SpaceMathController {
             window.location.href = 'index.html';
         });
 
-        // Handle pause button
+        // Handle pause button - Updated implementation
         this.view.onPauseClick(() => {
+            console.log('Pause button clicked, current state:', this.isPaused); // Debug log
             if (this.isPaused) {
                 this.resume();
             } else {
                 this.pause();
             }
         });
+
+        // Handle resume from pause menu
+        this.view.onResumeClick(() => {
+            this.resume();
+        });
+    }
+
+    pause() {
+        console.log('Pausing game'); // Debug log
+        this.isPaused = true;
+        this.view.showPauseMenu();
+        if (this.activeAnimationFrame) {
+            cancelAnimationFrame(this.activeAnimationFrame);
+            this.activeAnimationFrame = null;
+        }
+    }
+
+    resume() {
+        console.log('Resuming game'); // Debug log
+        this.isPaused = false;
+        this.view.hidePauseMenu();
+        this.lastFrameTime = performance.now();
+        this.gameLoop();
     }
 
     startGameLoop() {

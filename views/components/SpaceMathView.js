@@ -7,8 +7,6 @@ class SpaceMathView {
     }
 
     setupEventListeners() {
-        // Remove mouse/touch movement handlers, keep other event listeners
-        
         // Handle back button
         const backButton = document.getElementById('back-button');
         if (backButton) {
@@ -19,7 +17,7 @@ class SpaceMathView {
             });
         }
 
-        // Handle pause button
+        // Handle pause button - Updated implementation
         const pauseButton = document.getElementById('pause-button');
         if (pauseButton) {
             pauseButton.addEventListener('click', () => {
@@ -509,10 +507,68 @@ class SpaceMathView {
     }
 
     onPauseClick(callback) {
+        this.onPauseClicked = callback;
+        // Ensure we attach the listener to any existing pause button
         const pauseButton = document.getElementById('pause-button');
         if (pauseButton) {
             pauseButton.addEventListener('click', callback);
         }
+    }
+
+    showPauseMenu() {
+        const overlay = document.createElement('div');
+        overlay.className = 'pause-overlay';
+        
+        const menu = document.createElement('div');
+        menu.className = 'pause-menu';
+        menu.innerHTML = `
+            <h2>Game Paused</h2>
+            <button class="resume-btn">Resume</button>
+            <button class="restart-btn">Restart</button>
+            <button class="quit-btn">Quit</button>
+        `;
+        
+        // Add event listeners for pause menu buttons
+        const resumeBtn = menu.querySelector('.resume-btn');
+        const restartBtn = menu.querySelector('.restart-btn');
+        const quitBtn = menu.querySelector('.quit-btn');
+        
+        resumeBtn.addEventListener('click', () => {
+            if (this.onResumeClicked) {
+                this.onResumeClicked();
+            }
+        });
+        
+        restartBtn.addEventListener('click', () => {
+            window.location.reload();
+        });
+        
+        quitBtn.addEventListener('click', () => {
+            window.location.href = 'index.html';
+        });
+        
+        overlay.appendChild(menu);
+        this.container.appendChild(overlay);
+    }
+
+    hidePauseMenu() {
+        const overlay = document.querySelector('.pause-overlay');
+        if (overlay) {
+            overlay.remove();
+        }
+    }
+
+    // Add event handler setters for pause menu actions
+    onResumeClick(callback) {
+        this.onResumeClicked = callback;
+    }
+
+    onRestartClick(callback) {
+        this.onRestartClicked = callback;
+    }
+
+    onQuitClick(callback) {
+        this.onQuitClicked = callback;
     }
 }
 
