@@ -64,22 +64,6 @@ class SpaceMathController {
             }
         });
 
-        // Handle rocket movement
-        document.addEventListener('mousemove', (e) => {
-            const bounds = this.view.gameArea.getBoundingClientRect();
-            const x = ((e.clientX - bounds.left) / bounds.width) * 100;
-            this.view.moveRocket(Math.max(10, Math.min(90, x))); // Keep rocket within 10-90% of screen width
-        });
-
-        // Handle touch movement for mobile
-        document.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            const bounds = this.view.gameArea.getBoundingClientRect();
-            const touch = e.touches[0];
-            const x = ((touch.clientX - bounds.left) / bounds.width) * 100;
-            this.view.moveRocket(Math.max(10, Math.min(90, x)));
-        });
-
         // Handle back button
         this.view.onBackClick(() => {
             this.cleanup();

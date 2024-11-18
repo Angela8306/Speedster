@@ -10,13 +10,13 @@ class SpaceMathModel {
         this.streak = 0;
         this.isGameOver = false;
         
-        // Level settings
+        // Level settings - Reduced speeds across all levels
         this.levelSettings = {
-            1: { speed: 0.5, maxNum: 10, asteroidInterval: 4000 },
-            2: { speed: 0.7, maxNum: 12, asteroidInterval: 3500 },
-            3: { speed: 0.9, maxNum: 15, asteroidInterval: 3000 },
-            4: { speed: 1.1, maxNum: 20, asteroidInterval: 2500 },
-            5: { speed: 1.3, maxNum: 25, asteroidInterval: 2000 }
+            1: { speed: 0.2, maxNum: 10, asteroidInterval: 4000 },  // Reduced from 0.5 to 0.2
+            2: { speed: 0.35, maxNum: 12, asteroidInterval: 3500 }, // Reduced from 0.7 to 0.35
+            3: { speed: 0.5, maxNum: 15, asteroidInterval: 3000 },  // Reduced from 0.9 to 0.5
+            4: { speed: 0.7, maxNum: 20, asteroidInterval: 2500 },  // Reduced from 1.1 to 0.7
+            5: { speed: 0.9, maxNum: 25, asteroidInterval: 2000 }   // Reduced from 1.3 to 0.9
         };
 
         // Power-up types
@@ -83,6 +83,7 @@ class SpaceMathModel {
         return asteroid;
     }
 
+    // Rest of the class methods remain unchanged...
     createPowerUp() {
         const types = Object.keys(this.powerUpTypes);
         const type = types[Math.floor(Math.random() * types.length)];
