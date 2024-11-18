@@ -55,7 +55,7 @@ class GameLibrary {
                     'Destroy asteroids with correct answers',
                     'Progressive difficulty levels'
                 ],
-                supportedOperations: ['addition', 'multiplication', 'division']
+                supportedOperations: ['addition', 'subtraction', 'multiplication', 'division']
             },
             {
                 id: 'math-monsters',
@@ -68,7 +68,7 @@ class GameLibrary {
                     'Collect monster cards',
                     'Special power-ups'
                 ],
-                supportedOperations: ['addition', 'subtraction', 'multiplication']
+                supportedOperations: ['addition', 'subtraction', 'multiplication', 'division']
             },
             {
                 id: 'candy-math',

@@ -10,13 +10,13 @@ class SpaceMathModel {
         this.streak = 0;
         this.isGameOver = false;
         
-        // Level settings - Reduced speeds across all levels
+        // Level settings
         this.levelSettings = {
-            1: { speed: 0.2, maxNum: 10, asteroidInterval: 4000 },  // Reduced from 0.5 to 0.2
-            2: { speed: 0.35, maxNum: 12, asteroidInterval: 3500 }, // Reduced from 0.7 to 0.35
-            3: { speed: 0.5, maxNum: 15, asteroidInterval: 3000 },  // Reduced from 0.9 to 0.5
-            4: { speed: 0.7, maxNum: 20, asteroidInterval: 2500 },  // Reduced from 1.1 to 0.7
-            5: { speed: 0.9, maxNum: 25, asteroidInterval: 2000 }   // Reduced from 1.3 to 0.9
+            1: { speed: 0.2, maxNum: 10, asteroidInterval: 4000 },   // Starting speed unchanged
+            2: { speed: 0.25, maxNum: 12, asteroidInterval: 3800 },  // Smaller increment from 0.35
+            3: { speed: 0.3, maxNum: 15, asteroidInterval: 3600 },   // Smaller increment from 0.5
+            4: { speed: 0.35, maxNum: 20, asteroidInterval: 3400 },  // Smaller increment from 0.7
+            5: { speed: 0.4, maxNum: 25, asteroidInterval: 3200 }    // Smaller increment from 0.9
         };
 
         // Power-up types
@@ -30,17 +30,26 @@ class SpaceMathModel {
     generateProblem() {
         const settings = this.levelSettings[this.level];
         const operations = this.operation === 'all' ? 
-            ['addition', 'multiplication', 'division'] : [this.operation];
+            ['addition', 'subtraction', 'multiplication', 'division'] : [this.operation];
         
         const operation = operations[Math.floor(Math.random() * operations.length)];
         let problem = { question: '', answer: 0, points: 10 };
 
         switch(operation) {
             case 'addition':
-                const num1 = Math.ceil(Math.random() * settings.maxNum);
-                const num2 = Math.ceil(Math.random() * settings.maxNum);
-                problem.question = `${num1} + ${num2}`;
-                problem.answer = num1 + num2;
+                const addNum1 = Math.ceil(Math.random() * settings.maxNum);
+                const addNum2 = Math.ceil(Math.random() * settings.maxNum);
+                problem.question = `${addNum1} + ${addNum2}`;
+                problem.answer = addNum1 + addNum2;
+                break;
+
+            case 'subtraction':
+                // Generate subtraction that doesn't result in negative numbers
+                const subNum2 = Math.ceil(Math.random() * settings.maxNum);
+                const subNum1 = subNum2 + Math.ceil(Math.random() * settings.maxNum);
+                problem.question = `${subNum1} - ${subNum2}`;
+                problem.answer = subNum1 - subNum2;
+                problem.points = 15; // Slightly more points than addition
                 break;
 
             case 'multiplication':
@@ -65,6 +74,7 @@ class SpaceMathModel {
         return problem;
     }
 
+    // Rest of the class implementation remains the same...
     createAsteroid() {
         const problem = this.generateProblem();
         const settings = this.levelSettings[this.level];
@@ -83,7 +93,6 @@ class SpaceMathModel {
         return asteroid;
     }
 
-    // Rest of the class methods remain unchanged...
     createPowerUp() {
         const types = Object.keys(this.powerUpTypes);
         const type = types[Math.floor(Math.random() * types.length)];
@@ -102,12 +111,9 @@ class SpaceMathModel {
 
     updateAsteroids(deltaTime) {
         this.asteroids.forEach(asteroid => {
-            // Move asteroid down by speed amount
             asteroid.y += asteroid.speed;
-            console.log(`Asteroid ${asteroid.id} new position:`, asteroid.y);
         });
 
-        // Filter out asteroids that are off screen
         this.asteroids = this.asteroids.filter(asteroid => {
             if (asteroid.y > 110) {  // Off screen
                 if (!asteroid.isDestroyed) {
@@ -124,10 +130,7 @@ class SpaceMathModel {
 
     updatePowerUps(deltaTime) {
         this.powerUps = this.powerUps.filter(powerUp => {
-            // Move power-up down
             powerUp.y += powerUp.speed;
-            
-            // Remove if it's collected or off screen
             return !powerUp.isCollected && powerUp.y <= 110;
         });
     }
@@ -142,14 +145,12 @@ class SpaceMathModel {
             asteroid.isDestroyed = true;
             this.streak++;
             
-            // Calculate points with streak bonus
             let points = asteroid.problem.points;
             if (this.streak >= 5) points *= 2;
             if (this.streak >= 10) points *= 3;
             
             this.score += points;
 
-            // Level up check
             if (this.score >= this.level * 100 && this.level < 5) {
                 this.level++;
             }
