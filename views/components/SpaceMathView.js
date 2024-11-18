@@ -418,7 +418,7 @@ class SpaceMathView {
                 <p>Level Reached: ${stats.level}</p>
             </div>
             <div class="game-over-buttons">
-                <button class="play-again-btn">Play Again</button>
+                <button class="restart-btn play-again-btn">Play Again</button>
                 <button class="home-btn">Home</button>
             </div>
         `;
@@ -427,8 +427,10 @@ class SpaceMathView {
         this.container.appendChild(overlay);
 
         // Add button handlers
-        content.querySelector('.play-again-btn').addEventListener('click', () => {
-            window.location.reload();
+        content.querySelector('.restart-btn').addEventListener('click', () => {
+            if (this.onRestartGame) {
+                this.onRestartGame();
+            }
         });
 
         content.querySelector('.home-btn').addEventListener('click', () => {
@@ -446,27 +448,6 @@ class SpaceMathView {
         setTimeout(() => {
             announcement.remove();
         }, 2000);
-    }
-
-    showPauseMenu() {
-        const overlay = document.createElement('div');
-        overlay.className = 'pause-overlay';
-        overlay.innerHTML = `
-            <div class="pause-menu">
-                <h2>Game Paused</h2>
-                <button class="resume-btn">Resume</button>
-                <button class="restart-btn">Restart</button>
-                <button class="quit-btn">Quit</button>
-            </div>
-        `;
-        this.container.appendChild(overlay);
-    }
-
-    hidePauseMenu() {
-        const overlay = document.querySelector('.pause-overlay');
-        if (overlay) {
-            overlay.remove();
-        }
     }
 
     activatePowerUp(type) {
@@ -518,37 +499,36 @@ class SpaceMathView {
     showPauseMenu() {
         const overlay = document.createElement('div');
         overlay.className = 'pause-overlay';
-        
-        const menu = document.createElement('div');
-        menu.className = 'pause-menu';
-        menu.innerHTML = `
-            <h2>Game Paused</h2>
-            <button class="resume-btn">Resume</button>
-            <button class="restart-btn">Restart</button>
-            <button class="quit-btn">Quit</button>
+        overlay.innerHTML = `
+            <div class="pause-menu">
+                <h2>Game Paused</h2>
+                <button class="resume-btn">Resume</button>
+                <button class="restart-btn">Restart</button>
+                <button class="quit-btn">Quit</button>
+            </div>
         `;
-        
-        // Add event listeners for pause menu buttons
-        const resumeBtn = menu.querySelector('.resume-btn');
-        const restartBtn = menu.querySelector('.restart-btn');
-        const quitBtn = menu.querySelector('.quit-btn');
-        
+        this.container.appendChild(overlay);
+
+        // Add button handlers
+        const resumeBtn = overlay.querySelector('.resume-btn');
+        const restartBtn = overlay.querySelector('.restart-btn');
+        const quitBtn = overlay.querySelector('.quit-btn');
+
         resumeBtn.addEventListener('click', () => {
             if (this.onResumeClicked) {
                 this.onResumeClicked();
             }
         });
-        
+
         restartBtn.addEventListener('click', () => {
-            window.location.reload();
+            if (this.onRestartGame) {
+                this.onRestartGame();
+            }
         });
-        
+
         quitBtn.addEventListener('click', () => {
             window.location.href = 'index.html';
         });
-        
-        overlay.appendChild(menu);
-        this.container.appendChild(overlay);
     }
 
     hidePauseMenu() {
@@ -556,6 +536,16 @@ class SpaceMathView {
         if (overlay) {
             overlay.remove();
         }
+    }
+
+    // Add method to set restart handler
+    onRestart(callback) {
+        this.onRestartGame = callback;
+    }
+
+    // Add method to set resume handler
+    onResume(callback) {
+        this.onResumeClicked = callback;
     }
 
     // Add event handler setters for pause menu actions

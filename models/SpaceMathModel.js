@@ -1,7 +1,10 @@
 class SpaceMathModel {
     constructor(operation = 'all') {
-        console.log('Initializing SpaceMathModel with operation:', operation);
         this.operation = operation;
+        this.resetGame();
+    }
+
+    resetGame() {
         this.score = 0;
         this.level = 1;
         this.lives = 3;
@@ -10,16 +13,16 @@ class SpaceMathModel {
         this.streak = 0;
         this.isGameOver = false;
         
-        // Level settings
+        // Reset level settings
         this.levelSettings = {
-            1: { speed: 0.2, asteroidInterval: 4000 },
-            2: { speed: 0.25, asteroidInterval: 3800 },
-            3: { speed: 0.3, asteroidInterval: 3600 },
-            4: { speed: 0.35, asteroidInterval: 3400 },
-            5: { speed: 0.4, asteroidInterval: 3200 }
+            1: { speed: 0.2, maxNum: 10, asteroidInterval: 4000 },
+            2: { speed: 0.25, maxNum: 12, asteroidInterval: 3800 },
+            3: { speed: 0.3, maxNum: 15, asteroidInterval: 3600 },
+            4: { speed: 0.35, maxNum: 20, asteroidInterval: 3400 },
+            5: { speed: 0.4, maxNum: 25, asteroidInterval: 3200 }
         };
 
-        // Power-up types
+        // Reset power-up types
         this.powerUpTypes = {
             shield: { duration: 10000, probability: 0.2 },
             slowTime: { duration: 8000, probability: 0.2 },

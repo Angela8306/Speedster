@@ -6,9 +6,9 @@ class SpaceMathController {
         this.powerUpTimer = 0;
         this.activeAnimationFrame = null;
         this.activePowerUps = new Map();
-        this.isPaused = false;  // Add this line
         // Bind the game loop to preserve context
         this.gameLoop = this.gameLoop.bind(this);
+        this.restartGame = this.restartGame.bind(this);
     }
 
     async initialize() {
@@ -21,8 +21,6 @@ class SpaceMathController {
             this.model = new SpaceMathModel(this.operation);
             this.view = new SpaceMathView();
 
-            console.log('Model initialized:', this.model);
-
             // Create and append game container
             document.body.innerHTML = '';
             const gameContainer = this.view.create();
@@ -31,7 +29,6 @@ class SpaceMathController {
             // Set up event listeners
             this.setupEventListeners();
 
-            console.log('Creating initial asteroid...');
             // Create initial asteroid
             const initialAsteroid = this.model.createAsteroid();
             this.model.asteroids.push(initialAsteroid);
@@ -85,6 +82,16 @@ class SpaceMathController {
         this.view.onResumeClick(() => {
             this.resume();
         });
+
+        // Add restart handler
+        this.view.onRestart(() => {
+            this.restartGame();
+        });
+
+        // Add resume handler
+        this.view.onResume(() => {
+            this.resume();
+        });
     }
 
     pause() {
@@ -98,11 +105,59 @@ class SpaceMathController {
     }
 
     resume() {
-        console.log('Resuming game'); // Debug log
+        const overlay = document.querySelector('.pause-overlay');
+        if (overlay) {
+            overlay.remove();
+        }
         this.isPaused = false;
-        this.view.hidePauseMenu();
         this.lastFrameTime = performance.now();
         this.gameLoop();
+    }
+
+    restartGame() {
+        // Clean up current game state
+        if (this.activeAnimationFrame) {
+            cancelAnimationFrame(this.activeAnimationFrame);
+        }
+
+        // Remove all existing asteroids and power-ups from the view
+        const asteroidElements = document.querySelectorAll('.asteroid');
+        const powerUpElements = document.querySelectorAll('.power-up');
+        
+        asteroidElements.forEach(element => element.remove());
+        powerUpElements.forEach(element => element.remove());
+
+        // Reset model using its reset method
+        this.model.resetGame();
+
+        // Clear timers and state
+        this.lastFrameTime = 0;
+        this.asteroidTimer = 0;
+        this.powerUpTimer = 0;
+        this.activePowerUps.clear();
+        this.isPaused = false;
+
+        // Remove any overlays (pause menu or game over screen)
+        const overlays = document.querySelectorAll('.game-over-overlay, .pause-overlay');
+        overlays.forEach(overlay => overlay.remove());
+
+        // Update view with reset state
+        this.view.updateGameState({
+            asteroids: [],
+            powerUps: [],
+            lives: this.model.lives,
+            level: this.model.level,
+            score: this.model.score
+        });
+        this.view.updateStreak(this.model.streak);
+
+        // Create initial asteroid
+        const initialAsteroid = this.model.createAsteroid();
+        this.model.asteroids.push(initialAsteroid);
+        this.view.createAsteroid(initialAsteroid);
+
+        // Restart game loop
+        this.startGameLoop();
     }
 
     startGameLoop() {
@@ -215,24 +270,14 @@ class SpaceMathController {
         }
     }
 
-    pause() {
-        this.isPaused = true;
-        this.view.showPauseMenu();
-        if (this.activeAnimationFrame) {
-            cancelAnimationFrame(this.activeAnimationFrame);
-        }
-    }
-
-    resume() {
-        this.isPaused = false;
-        this.view.hidePauseMenu();
-        this.lastFrameTime = performance.now();
-        this.gameLoop();
-    }
-
     gameOver() {
         if (this.activeAnimationFrame) {
             cancelAnimationFrame(this.activeAnimationFrame);
+        }
+        // Ensure any pause menu is removed when showing game over screen
+        const pauseOverlay = document.querySelector('.pause-overlay');
+        if (pauseOverlay) {
+            pauseOverlay.remove();
         }
         this.view.showGameOver({
             score: this.model.score,
